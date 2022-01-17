@@ -3,7 +3,7 @@
 
 void setup() {
   // put your setup code here, to run once:
-  Key k; // 
+  Key k; // create an key object which has all the functions in it
 
 }
 

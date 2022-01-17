@@ -103,12 +103,16 @@ void Key::decode_format(uint8_t enc1, uint8_t enc2){
  * ***************************************************/
 void Key::serial_out(){
     char key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
-    switch key_press{
+    switch (key_press){
         case KEY_LEFT_SHIFT:
         {
             toggle_shift();
         }
-        case KEY_CAPS_LOCKS:
+        case KEY_RIGHT_SHIFT:
+        {
+            toggle_shift();
+        }
+        case KEY_CAPS_LOCK:
         {
             toggle_caps_lock();
         }
@@ -116,6 +120,7 @@ void Key::serial_out(){
         {
             return; // means that are no letters here
         }
+
     }
     // if (key_press == KEY_LEFT_SHIFT)
     //     toggle_shift();
