@@ -1,4 +1,6 @@
-#include <Keyboard.h> // Arduino keyboard library
+#ifndef KEYBOARD_SERIAL_HEADER_HPP
+#define KEYBOARD_SERIAL_HEADER_HPP
+#include <Keyboard.h> // Arduino/micro keyboard library
 
 class Key {
     private:
@@ -12,20 +14,20 @@ class Key {
         // [joy1][joy2]
         char keymap[8][8] = {
             //                        tab
-            {'k', 'l', 'm', 'n', 'o', 0xb3, NULL, NULL},
+            {'k', 'l', 'm', 'n', 'o', KEY_TAB, NULL, NULL},
             //                        alt
-            {'p', 'q', 'r', 's', 't', 0x82, '[', ']'},
+            {'p', 'q', 'r', 's', 't', KEY_LEFT_ALT, '[', ']'},
             {'u', 'v', 'w', 'x', 'y', ' ','\\', NULL},
             //                        delete
-            {',', '.', '\'', '/', 'z', 0xd4, NULL, NULL},
+            {',', '.', '\'', '/', 'z', KEY_DELETE, NULL, NULL},
             //                        enter/return
-            {'6', '7', '8', '9', '0', 0xb0, '-', '='},
+            {'6', '7', '8', '9', '0', KEY_RETURN, '-', '='},
             //                        home
-            {'1', '2', '3', '4', '5', 0xd2, NULL, NULL},
+            {'1', '2', '3', '4', '5', KEY_HOME, NULL, NULL},
             //                        backspace
-            {'a', 'b', 'c', 'd', 'e', 0xb2, NULL, NULL},
+            {'a', 'b', 'c', 'd', 'e', KEY_BACKSPACE, NULL, NULL},
             //                        ctrl
-            {'f', 'g', 'h', 'i', 'j', 0x84, NULL, NULL}
+            {'f', 'g', 'h', 'i', 'j', KEY_LEFT_CTRL, NULL, NULL}
         };
 
         // keymap with shift 
@@ -50,6 +52,7 @@ class Key {
 
 
     public:
+        Key();
         void keyboard_serial(uint8_t enc1, uint8_t enc2);
         void decode_format(uint8_t enc1, uint8_t enc2);
         void serial_out();
@@ -58,6 +61,10 @@ class Key {
 
 
 };
+
+Key::Key(){
+    Keyboard.begin();
+}
 
 /*****************************************************
  *                  keyboard_serial 
@@ -96,6 +103,7 @@ void Key::decode_format(uint8_t enc1, uint8_t enc2){
  * ***************************************************/
 void Key::serial_out(){
     char key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
+    if (key_press == )
     Keyboard.press(key_press);
     Keyboard.releaseAll();
 }
@@ -108,3 +116,5 @@ void Key::toggle_shift(){
 void Key::toggle_caps_lock(){
     caps_lock ^= 1;
 }
+
+#endif
