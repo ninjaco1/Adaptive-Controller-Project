@@ -53,16 +53,34 @@ class Key {
         void keyboard_serial(uint8_t enc1, uint8_t enc2);
         void decode_format(uint8_t enc1, uint8_t enc2);
         void serial_out();
+        void toggle_shift();
+        void toggle_caps_lock();
 
 
 };
 
-
+/*****************************************************
+ *                  keyboard_serial 
+ *  It takes the joystick data as the inputs, then  
+ *  parses the data to see what combination of joystick
+ *  was made. Then send that character to the screen
+ * ***************************************************/
 void Key::keyboard_serial(uint8_t enc1, uint8_t enc2){
+    // if any of the joysticks are 0 that means that mouse
+    // is being used
+    if (enc1 == 0 || enc2 == 0)
+        return;
     decode_format(enc1, enc2); // decode enc1 and enc2
     serial_out();
 }
 
+/*****************************************************
+ *                  decode_format 
+ *  Takes the raw joystick data as input then decodes
+ *  it.
+ *  Examples:
+ *  enc1 = 13, enc2 = 24 ----> e1 = 3, e2 = 4 
+ * ***************************************************/
 void Key::decode_format(uint8_t enc1, uint8_t enc2){
     // enc1 should start with a 1
     e1 = enc1 % 10;
@@ -70,7 +88,23 @@ void Key::decode_format(uint8_t enc1, uint8_t enc2){
     e2 = enc2 % 10;
 }
 
+/*****************************************************
+ *                  serial_out 
+ *  Check which modes are on then determine what 
+ *  character to send to the serial. 
+ * 
+ * ***************************************************/
 void Key::serial_out(){
+    char key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
+    Keyboard.press(key_press);
+    Keyboard.releaseAll();
+}
 
 
+void Key::toggle_shift(){
+    shift ^= 1;
+}
+
+void Key::toggle_toggle_caps(){
+    caps_lock ^= 1;
 }
