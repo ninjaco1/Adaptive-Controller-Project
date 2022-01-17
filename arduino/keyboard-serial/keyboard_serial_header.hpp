@@ -14,7 +14,7 @@ class Key {
         // [joy1][joy2]
         char keymap[8][8] = {
             //                        tab
-            {'k', 'l', 'm', 'n', 'o', KEY_TAB, NULL, NULL},
+            {'k', 'l', 'm', 'n', 'o', KEY_TAB, KEY_LEFT_SHIFT, NULL},
             //                        alt
             {'p', 'q', 'r', 's', 't', KEY_LEFT_ALT, '[', ']'},
             {'u', 'v', 'w', 'x', 'y', ' ','\\', NULL},
@@ -103,7 +103,18 @@ void Key::decode_format(uint8_t enc1, uint8_t enc2){
  * ***************************************************/
 void Key::serial_out(){
     char key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
-    if (key_press == )
+    switch key_press{
+        case KEY_LEFT_SHIFT:
+        {
+            toggle_shift();
+        }
+        case KEY_CAPS_LOCKS:
+        {
+            toggle_caps_lock();
+        }
+    }
+    // if (key_press == KEY_LEFT_SHIFT)
+    //     toggle_shift();
     Keyboard.press(key_press);
     Keyboard.releaseAll();
 }
