@@ -112,6 +112,10 @@ void Key::serial_out(){
         {
             toggle_caps_lock();
         }
+        case NULL:
+        {
+            return; // means that are no letters here
+        }
     }
     // if (key_press == KEY_LEFT_SHIFT)
     //     toggle_shift();
