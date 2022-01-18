@@ -58,6 +58,8 @@ class Key {
         void serial_out();
         void toggle_shift();
         void toggle_caps_lock();
+        uint8_t get_e1();
+        uint8_t get_e2();
 
 
 };
@@ -78,6 +80,12 @@ void Key::keyboard_serial(uint8_t enc1, uint8_t enc2){
     if (enc1 == 0 || enc2 == 0)
         return;
     decode_format(enc1, enc2); // decode enc1 and enc2
+
+    // these numbers shouldn't do anything 
+    if (e1 == 8 || e1 == 9 || e2 == 8 || e2 == 9)
+        return;
+
+
     serial_out();
 }
 
@@ -136,5 +144,15 @@ void Key::toggle_shift(){
 void Key::toggle_caps_lock(){
     caps_lock ^= 1;
 }
+
+uint8_t Key::get_e1(){
+    return e1;
+}
+
+uint8_t Key::get_e2(){
+    return e2;
+}
+
+
 
 #endif
