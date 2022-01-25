@@ -1,5 +1,8 @@
 #include "./keyboard_serial_header.hpp"
 
+// #define AUTO
+#define BUTTON_CONTROL
+
 const int buttonPin1 = 2; // button for
 const int buttonPin2 = 3;
 Key k; // create an key object which has all the functions in it
@@ -24,6 +27,7 @@ void setup()
 void loop()
 {
   // put your main code here, to run repeatedly:
+  #ifdef AUTO
   for (int joystick1 = 10; joystick1 < 18; joystick1++)
   {
     for (int joystick2 = 20; joystick2 < 28; joystick2++)
@@ -85,4 +89,31 @@ void loop()
 
   // turning off shift
   k.toggle_shift();
+
+  #endif
+
+  #ifdef BUTTON_CONTROL
+  //  for marcos to see if they work
+  buttonState1 = digitalRead(buttonPin1);
+  buttonState2 = digitalRead(buttonPin2);
+
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState1 == HIGH) {
+    // open new tab:
+    // ctrl + T
+    // digitalWrite(ledPin, HIGH);
+  } 
+
+  if (buttonState2 == HIGH){
+    // close window
+    // ctrl + W
+    
+  }
+
+  #endif
+
+
+
+
+
 }
