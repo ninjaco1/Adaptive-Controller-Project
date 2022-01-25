@@ -100,14 +100,16 @@ void loop()
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState1 == HIGH) {
     // open new tab:
-    // ctrl + T
+    // ctrl + t
     // digitalWrite(ledPin, HIGH);
+    k.keyboard_serial(17,25); // ctrl
+    // t
   } 
 
   if (buttonState2 == HIGH){
     // close window
-    // ctrl + W
-    
+    // ctrl + w
+
   }
 
   #endif
