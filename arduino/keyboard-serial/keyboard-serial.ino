@@ -101,21 +101,22 @@ void loop()
   if (buttonState1 == HIGH) {
     // open new tab:
     // ctrl + t
-    // digitalWrite(ledPin, HIGH);
     k.keyboard_serial(17,25); // ctrl
-    // t
+    k.keyboard_serial(11,24); // t
+    k.toggle_ctrl();
+    delay(1000);
   } 
 
   if (buttonState2 == HIGH){
     // close window
     // ctrl + w
-
+    k.keyboard_serial(17,25); // ctrl
+    k.keyboard_serial(12,22); // w
+    k.toggle_ctrl();
+    delay(1000);
   }
 
   #endif
-
-
-
 
 
 }

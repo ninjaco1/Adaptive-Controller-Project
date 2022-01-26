@@ -6,10 +6,13 @@ class Key {
     private:
         uint8_t e1; // what was selected on left joystick
         uint8_t e2; // what was selected on right joystick
+        char buffer[2]; // if shift or ctrl were pressed
+        uint8_t buffer_count; // the items in the buffer
         
         // modes
-        uint8_t shift; // to see if shift is on or off
-        uint8_t caps_lock; // to see if caps lock is on or off
+        uint8_t shift;      // to see if shift is on or off
+        uint8_t caps_lock;  // to see if caps lock is on or off
+        uint8_t ctrl;       // to see if the ctrl is on or off
 
         // [joy1][joy2]
         char keymap[8][8] = {
@@ -58,6 +61,7 @@ class Key {
         void serial_out();
         void toggle_shift();
         void toggle_caps_lock();
+        void toggle_ctrl();
         uint8_t get_e1();
         uint8_t get_e2();
 
@@ -66,6 +70,7 @@ class Key {
 
 Key::Key(){
     Keyboard.begin();
+    buffer_count = 0;
 }
 
 /*****************************************************
@@ -110,7 +115,14 @@ void Key::decode_format(uint8_t enc1, uint8_t enc2){
  * 
  * ***************************************************/
 void Key::serial_out(){
-    char key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
+    char key_press;
+    // check if the thing press was a ctrl
+//    if (keymap[e1][e2] == KEY_LEFT_CTRL) {}
+
+
+    // then everything else after
+  
+    key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
     switch (key_press){
         case KEY_LEFT_SHIFT:
         {
@@ -124,12 +136,18 @@ void Key::serial_out(){
         {
             toggle_caps_lock();
         }
+        case KEY_LEFT_CTRL:
+        {
+            toggle_ctrl();
+        }
         case NULL:
         {
             return; // means that are no letters here
         }
 
     }
+    if (ctrl == 1)
+        Keyboard.press(KEY_LEFT_CTRL);
     // if (key_press == KEY_LEFT_SHIFT)
     //     toggle_shift();
     Keyboard.press(key_press);
@@ -143,6 +161,10 @@ void Key::toggle_shift(){
 
 void Key::toggle_caps_lock(){
     caps_lock ^= 1;
+}
+
+void Key::toggle_ctrl(){
+    ctrl ^= 1;
 }
 
 uint8_t Key::get_e1(){
