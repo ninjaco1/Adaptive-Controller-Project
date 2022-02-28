@@ -9,7 +9,7 @@
 
 //declare joystick objects
 JOYSTICK Lstick;
-//JOYSTICK Rstick;
+JOYSTICK Rstick;
 
 uint8_t Laddress = 0x20;  //I2C address for left joystick (default)
 uint8_t Raddress = 0x21;  //I2C address for right joystick (reprogrammed)
@@ -55,17 +55,17 @@ uint8_t chk_buttons(uint8_t pin) {
 
 void setup() {
   Serial.begin(9600);   //start comms at 9600 baud
-
+/*
     if(Lstick.begin(Wire, Laddress) == false){
     Serial.println("Left Joystick does not appear to be connected. Please check wiring. Freezing...");
     while(1);
     }
-   /*
+*/   
     if(Rstick.begin(Wire, Raddress) == false){
     Serial.println("Right Joystick does not appear to be connected. Please check wiring. Freezing...");
     while(1);
     }
-   */
+   
 
    //set D3-6 as inputs
    pinMode(3, INPUT);
@@ -76,14 +76,15 @@ void setup() {
 
 void loop() {
   //gather coord data from joystick (0-1023)
+  
   LinX = Lstick.getHorizontal();
   LinY = Lstick.getVertical();
   Lclick = !(Lstick.getButton());
-  /*
+  
   RinX = Rstick.getHorizontal();
   RinY = Rstick.getVertical();
   Rclick = !(Rstick.getButton());
-  */
+  
 
   //Parse joystick data for keyboard
 
@@ -128,8 +129,7 @@ void loop() {
       Lkey = 00;
     }
   }
-
-  /*
+  
   //RIGHT STICK: if X is to the left
   if(RinX < 470){  //about 60 (~20%) away from center to constitute change
     //three cases for Y
@@ -171,7 +171,7 @@ void loop() {
       Rkey = 00;
     }
   }
-  */
+  
 
   //Check pushbuttons, account for debouncing
   if(chk_buttons(3)){
@@ -188,8 +188,9 @@ void loop() {
   }
 
   //Print button, joystick, and keyboard output maximum of 100ms (10Hz). After, reset button status (besides CAPS)
-  if(millis() >= (timepass + 500)){
+  if(millis() >= (timepass + 100)){
     timepass = millis();    //set timer to next increment
+/*
     //joystick info
     Serial.print("LCoord: [");
     Serial.print(LinX, DEC);
@@ -216,7 +217,7 @@ void loop() {
     Serial.print(Ctrl, DEC);
     Serial.print("  Alt: ");
     Serial.println(Alt, DEC);
-
+*/
     //Reset all non-CAPS buttons
     Lclick = 0;
     Rclick = 0;
