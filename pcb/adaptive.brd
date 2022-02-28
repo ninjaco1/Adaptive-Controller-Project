@@ -214,6 +214,8 @@
 <text x="2.54" y="3.81" size="1.27" layer="21">Adaptive Controller Group 18
 Feb 6, 2022
 Anthony Nguyen</text>
+<dimension x1="0" y1="0" x2="100" y2="0" x3="50" y3="-7.62" textsize="1.778" layer="1"/>
+<dimension x1="0" y1="0" x2="0" y2="80" x3="-6.35" y3="40" textsize="1.778" layer="1"/>
 </plain>
 <libraries>
 <library name="SparkFun-Boards" urn="urn:adsk.eagle:library:509">
