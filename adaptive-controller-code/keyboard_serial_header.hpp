@@ -13,6 +13,7 @@ class Key {
         uint8_t shift;      // to see if shift is on or off
         uint8_t caps_lock;  // to see if caps lock is on or off
         uint8_t ctrl;       // to see if the ctrl is on or off
+        uint8_t alt;        // to see if the alt is on or off
 
         // [joy1][joy2]
         char keymap[8][8] = {
@@ -61,6 +62,7 @@ class Key {
         void serial_out();
         void toggle_shift();
         void toggle_caps_lock();
+        void toggle_alt();
         void toggle_ctrl();
         uint8_t get_e1();
         uint8_t get_e2();
@@ -140,6 +142,10 @@ void Key::serial_out(){
         {
             toggle_ctrl();
         }
+        case KEY_LEFT_ALT:
+        {
+            toggle_alt();
+        }
         case NULL:
         {
             return; // means that are no letters here
@@ -165,6 +171,10 @@ void Key::toggle_caps_lock(){
 
 void Key::toggle_ctrl(){
     ctrl ^= 1;
+}
+
+void Key::toggle_alt(){
+    alt ^= 1;
 }
 
 uint8_t Key::get_e1(){
