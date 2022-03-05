@@ -84,6 +84,33 @@ uint8_t chk_click(uint8_t which_click) {
   }
 }
 
+//********************************************************************************
+//                            chk_press
+// Checks the state of the press passed to it, checks for falling edge. Used
+// for seeing if the button has been pressed "down," so is only used for mouse
+// since all other buttons are single-press. Needs 1 for right click, 2 for left.
+//********************************************************************************
+uint8_t chk_press(uint8_t which_click) {
+  static uint8_t state1 = 0;      //holds state of right debounce reading
+  static uint8_t state2 = 0;      //holds state of left debounce
+  if (which_click == 1) {  //right click
+    state1 = (state1 << 1) | (Rstick.getButton()) | 0xE0; //mask
+    if (state1 == 0xF0)    //compares to rising edge value (so holding doesn't stack)
+      return 1;
+
+    //if not true for 4 times, return false
+    return 0;
+  }
+
+  if (which_click == 2) {  //left click
+    state2 = (state2 << 1) | (Lstick.getButton()) | 0xE0; //mask
+    if (state2 == 0xF0)    //compares to rising edge value (so holding doesn't stack)
+      return 1;
+
+    //if not true for 4 times, return false
+    return 0;
+  }
+}
 
 void setup() {
   Serial.begin(9600);   //start comms at 9600 baud
