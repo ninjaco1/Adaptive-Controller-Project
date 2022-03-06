@@ -1,7 +1,7 @@
 #include "./keyboard_serial_header.hpp"
 
-// #define AUTO
-#define BUTTON_CONTROL
+#define AUTO
+// #define BUTTON_CONTROL
 
 const int buttonPin1 = 2; // button for
 const int buttonPin2 = 3;
