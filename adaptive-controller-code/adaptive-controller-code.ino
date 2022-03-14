@@ -11,6 +11,8 @@
 #include <TFT.h>
 #define OFF 0
 #define ON 1
+#define RIGHT 2
+#define LEFT 1
 #endif
 
 #ifdef MOUSEBLOCK
@@ -91,7 +93,7 @@ uint8_t chk_click(uint8_t which_click)
 {
     static uint8_t state1 = 0; // holds state of right debounce reading
     static uint8_t state2 = 0; // holds state of left debounce
-    if (which_click == 1)
+    if (which_click == RIGHT)
     {                                                          // right click
         state1 = (state1 << 1) | (!Rstick.getButton()) | 0xE0; // mask
         if (state1 == 0xEF)                                    // compares to rising edge value (so holding doesn't stack)
@@ -101,7 +103,7 @@ uint8_t chk_click(uint8_t which_click)
         return 0;
     }
 
-    if (which_click == 2)
+    if (which_click == LEFT)
     {                                                          // left click
         state2 = (state2 << 1) | (!Lstick.getButton()) | 0xE0; // mask
         if (state2 == 0xEF)                                    // compares to rising edge value (so holding doesn't stack)
@@ -148,11 +150,11 @@ void loop()
     // gather coord data from joystick (0-1023)
     LinX = Lstick.getHorizontal();
     LinY = Lstick.getVertical();
-    Lclick = chk_click(2); // send 2 for left click, 1 for right
+    Lclick = chk_click(LEFT); // send 1 for left click, 2 for right (reflect mouse click)
 
     RinX = Rstick.getHorizontal();
     RinY = Rstick.getVertical();
-    Rclick = chk_click(1); // send 1 for right click, 2 for left click
+    Rclick = chk_click(RIGHT); // send RIGHT for right click, LEFT for left click
 
     // Parse joystick data for keyboard
 
@@ -161,51 +163,33 @@ void loop()
     { // about 60 (~20%) away from center to constitute change
         // three cases for Y
         if (LinY < 470)
-        {
             Lkey = 15;
-        }
         else if (LinY > 575)
-        {
             Lkey = 17;
-        }
         else
-        {
             Lkey = 16;
-        }
     }
     // if X is to the right
     else if (LinX > 575)
     {
         // three cases for Y
         if (LinY < 470)
-        {
             Lkey = 13;
-        }
         else if (LinY > 575)
-        {
             Lkey = 11;
-        }
         else
-        {
             Lkey = 12;
-        }
     }
     // if X is in the middle
     else
     {
         // three cases for Y
         if (LinY < 470)
-        {
             Lkey = 14;
-        }
         else if (LinY > 575)
-        {
             Lkey = 10;
-        }
         else
-        {
             Lkey = 00;
-        }
     }
 
     // RIGHT STICK: if X is to the left
@@ -213,17 +197,11 @@ void loop()
     { // about 60 (~20%) away from center to constitute change
         // three cases for Y
         if (RinY < 470)
-        {
             Rkey = 25;
-        }
         else if (RinY > 575)
-        {
             Rkey = 27;
-        }
         else
-        {
             Rkey = 26;
-        }
     }
 
     // if X is to the right
@@ -231,17 +209,11 @@ void loop()
     {
         // three cases for Y
         if (RinY < 470)
-        {
             Rkey = 23;
-        }
         else if (RinY > 575)
-        {
             Rkey = 21;
-        }
         else
-        {
             Rkey = 22;
-        }
     }
 
     // if X is in the middle
@@ -249,17 +221,11 @@ void loop()
     {
         // three cases for Y
         if (RinY < 470)
-        {
             Rkey = 24;
-        }
         else if (RinY > 575)
-        {
             Rkey = 20;
-        }
         else
-        {
             Rkey = 00;
-        }
     }
 
     // Check pushbuttons, account for debouncing
@@ -293,7 +259,9 @@ void loop()
 
             //******************** Mouse Serial Code *****************
             if(Rclick)
-                mouse.click(1);
+                mouse.click(RIGHT);
+            if(Lclick)
+                mouse.click(LEFT);
             mouse.move(RinX, RinY, 0);
             Rclick = 0;
             //******************** Mouse Serial End ******************
