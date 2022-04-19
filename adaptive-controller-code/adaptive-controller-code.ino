@@ -2,37 +2,69 @@
 #define MOUSEBLOCK              TRUE;
 #define JOYSTICKBUTTONBLOCK     TRUE;
 #define KEYBOARDBLOCK           TRUE;
-#define OLEDBLOCK               FALSE;
+#define OLEDBLOCK               TRUE;
+
+#ifdef OLEDBLOCK
+    // You can use any (4 or) 5 pins 
+    #define SCLK_PIN 15
+    #define MOSI_PIN 16
+    #define DC_PIN   8
+    #define CS_PIN   10
+    #define RST_PIN  7
+
+    // one of these 3 includes conflicts with the joysticks
+    #include <Adafruit_GFX.h>
+    #include <Adafruit_SSD1351.h>
+    #include <SPI.h>
+
+    // Color definitions
+    #define BLACK           0x0000
+    #define BLUE            0x001F
+    #define RED             0xF800
+    #define GREEN           0x07E0
+    #define CYAN            0x07FF
+    #define MAGENTA         0xF81F
+    #define YELLOW          0xFFE0  
+    #define WHITE           0xFFFF
+    #define PURPLE          0x7810
+    #define ORANGE          0xFC00
+
+    // Screen dimensions
+    #define SCREEN_WIDTH  128
+    #define SCREEN_HEIGHT 128 
+
+    Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, CS_PIN, DC_PIN, MOSI_PIN, SCLK_PIN, RST_PIN);
+#endif
 
 #ifdef JOYSTICKBUTTONBLOCK
-#include "keyboard_serial_header.hpp"
-#include <Wire.h>
-#include "SparkFun_Qwiic_Joystick_Arduino_Library.h" //https://www.sparkfun.com/products/15168
-#include <TFT.h>
-#define OFF 0
-#define ON 1
-#define RIGHT 2
-#define LEFT 1
+    #include "keyboard_serial_header.hpp"
+    #include <Wire.h>
+    #include "SparkFun_Qwiic_Joystick_Arduino_Library.h" //https://www.sparkfun.com/products/15168
+    //#include <TFT.h>
+    #define OFF 0
+    #define ON 1
+    #define RIGHT 2
+    #define LEFT 1
 #endif
 
 #ifdef MOUSEBLOCK
-#include "Assistive_Mouse.h"
+    #include "Assistive_Mouse.h"
 #endif
 
 // declare joystick objects
 #ifdef JOYSTICKBUTTONBLOCK
-JOYSTICK Lstick;
-JOYSTICK Rstick;
+    JOYSTICK Lstick;
+    JOYSTICK Rstick;
 #endif
 
 // declare keyboard object
 #ifdef KEYBOARDBLOCK
-Key k;
+    Key k;
 #endif
 
 // declare mouse 
 #ifdef MOUSEBLOCK
-Assistive_Mouse mouse;
+    Assistive_Mouse mouse;
 #endif
 
 #ifdef JOYSTICKBUTTONBLOCK
@@ -118,6 +150,11 @@ void setup()
 {
     // put your setup code here, to run once:
     Serial.begin(9600);
+
+    #ifdef OLEDBLOCK
+        tft.begin();
+        tft.setRotation(1);
+    #endif
 
     #ifdef JOYSTICKBUTTONBLOCK
     if (Lstick.begin(Wire, Laddress) == false)
@@ -297,5 +334,9 @@ void loop()
         }
         #endif
     }
+
+    #ifdef OLEDBLOCK
+        tft.fillScreen(WHITE);
+    #endif
 
 }
