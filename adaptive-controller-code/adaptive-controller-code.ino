@@ -1,70 +1,71 @@
-//FEATURE SWITCH
-#define MOUSEBLOCK              TRUE;
-#define JOYSTICKBUTTONBLOCK     TRUE;
-#define KEYBOARDBLOCK           TRUE;
-#define OLEDBLOCK               TRUE;
+// FEATURE SWITCH
+#define MOUSEBLOCK TRUE;
+#define JOYSTICKBUTTONBLOCK TRUE;
+#define KEYBOARDBLOCK TRUE;
+#define OLEDBLOCK TRUE;
 
 #ifdef OLEDBLOCK
-    // You can use any (4 or) 5 pins 
-    #define SCLK_PIN 15
-    #define MOSI_PIN 16
-    #define DC_PIN   8
-    #define CS_PIN   10
-    #define RST_PIN  7
+// You can use any (4 or) 5 pins
+#define SCLK_PIN 15
+#define MOSI_PIN 16
+#define DC_PIN 8
+#define CS_PIN 10
+#define RST_PIN 7
 
-    // one of these 3 includes conflicts with the joysticks
-    #include <Adafruit_GFX.h>
-    #include <Adafruit_SSD1351.h>
-    #include <SPI.h>
+// one of these 3 includes conflicts with the joysticks
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1351.h>
+#include <SPI.h>
 
-    // Color definitions
-    #define BLACK           0x0000
-    #define BLUE            0x001F
-    #define RED             0xF800
-    #define GREEN           0x07E0
-    #define CYAN            0x07FF
-    #define MAGENTA         0xF81F
-    #define YELLOW          0xFFE0  
-    #define WHITE           0xFFFF
-    #define PURPLE          0x7810
-    #define ORANGE          0xFC00
+// Color definitions
+#define BLACK 0x0000
+#define BLUE 0x001F
+#define RED 0xF800
+#define GREEN 0x07E0
+#define CYAN 0x07FF
+#define MAGENTA 0xF81F
+#define YELLOW 0xFFE0
+#define WHITE 0xFFFF
+#define PURPLE 0x7810
+#define ORANGE 0xFC00
 
-    // Screen dimensions
-    #define SCREEN_WIDTH  128
-    #define SCREEN_HEIGHT 128 
+// Screen dimensions
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 128
 
-    Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, CS_PIN, DC_PIN, MOSI_PIN, SCLK_PIN, RST_PIN);
+Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, CS_PIN, DC_PIN, MOSI_PIN, SCLK_PIN, RST_PIN);
+bool setMouseSpeedFlag = false;
 #endif
 
 #ifdef JOYSTICKBUTTONBLOCK
-    #include "keyboard_serial_header.hpp"
-    #include <Wire.h>
-    #include "SparkFun_Qwiic_Joystick_Arduino_Library.h" //https://www.sparkfun.com/products/15168
-    //#include <TFT.h>
-    #define OFF 0
-    #define ON 1
-    #define RIGHT 2
-    #define LEFT 1
+#include "keyboard_serial_header.hpp"
+#include <Wire.h>
+#include "SparkFun_Qwiic_Joystick_Arduino_Library.h" //https://www.sparkfun.com/products/15168
+//#include <TFT.h>
+#define OFF 0
+#define ON 1
+#define RIGHT 2
+#define LEFT 1
 #endif
 
 #ifdef MOUSEBLOCK
-    #include "Assistive_Mouse.h"
+#include "Assistive_Mouse.h"
 #endif
 
 // declare joystick objects
 #ifdef JOYSTICKBUTTONBLOCK
-    JOYSTICK Lstick;
-    JOYSTICK Rstick;
+JOYSTICK Lstick;
+JOYSTICK Rstick;
 #endif
 
 // declare keyboard object
 #ifdef KEYBOARDBLOCK
-    Key k;
+Key k;
 #endif
 
-// declare mouse 
+// declare mouse
 #ifdef MOUSEBLOCK
-    Assistive_Mouse mouse;
+Assistive_Mouse mouse;
 #endif
 
 #ifdef JOYSTICKBUTTONBLOCK
@@ -146,17 +147,109 @@ uint8_t chk_click(uint8_t which_click)
     }
 }
 
+//******************************************************************************
+//                            mode_selector
+//
+//******************************************************************************
+void mode_selector(uint8_t selector)
+{
+    switch (selector)
+    {
+    case 0:
+        visual_aid_display('K', 'O', ' ', 'M', ' ', ' ', 'L', 'N');
+        break;
+    case 1:
+        visual_aid_display('P', 'T', '[', 'R', ']', ' ', 'Q', 'S');
+        break;
+    case 2:
+        visual_aid_display('U', 'Y', '\\', 'W', ' ', ' ', 'V', 'X');
+        break;
+    case 3:
+        visual_aid_display(',', 'Z', ' ', '\'', ' ', ' ', '.', '/');
+        break;
+    case 4:
+        visual_aid_display('6', '0', '-', '8', '=', ' ', '7', '9');
+        break;
+    case 5:
+        visual_aid_display('1', '5', ' ', '3', ' ', ' ', '2', '4');
+        break;
+    case 6:
+        visual_aid_display('A', 'E', ' ', 'C', ' ', ' ', 'B', 'D');
+        break;
+    case 7:
+        visual_aid_display('F', 'J', ' ', 'H', ' ', ' ', 'G', 'I');
+        break;
+    case 8:
+        visual_aid_display('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H');
+        break;
+    default:
+        tft.fillScreen(BLACK);
+    }
+}
+
+//******************************************************************************
+//                            visual_aid_display
+//
+//******************************************************************************
+void visual_aid_display(char one, char two, char three, char four, char five, char six, char seven, char eight)
+{
+    tft.fillScreen(BLACK);
+    tft.fillCircle(tft.width() / 2, tft.height() / 2, tft.height() / 2 - 1, WHITE);
+    tft.setTextSize(3);
+
+    // Top
+    tft.setCursor(tft.width() / 2 - 6, 5);
+    tft.setTextColor(RED);
+    tft.print(one);
+
+    // Bottom
+    tft.setCursor(tft.width() / 2 - 6, 105);
+    tft.setTextColor(YELLOW);
+    tft.print(two);
+
+    // Left
+    tft.setCursor(5, tft.height() / 2 - 10);
+    tft.setTextColor(PURPLE);
+    tft.print(three);
+
+    // Right
+    tft.setCursor(108, tft.height() / 2 - 10);
+    tft.setTextColor(ORANGE);
+    tft.print(four);
+
+    // Top Left
+    tft.setCursor(25, 20);
+    tft.setTextColor(GREEN);
+    tft.print(five);
+
+    // Bottom Left
+    tft.setCursor(25, 90);
+    tft.setTextColor(BLUE);
+    tft.print(six);
+
+    // Top Right
+    tft.setCursor(90, 20);
+    tft.setTextColor(MAGENTA);
+    tft.print(seven);
+
+    // Bottom Right
+    tft.setCursor(90, 90);
+    tft.setTextColor(CYAN);
+    tft.print(eight);
+}
+
 void setup()
 {
     // put your setup code here, to run once:
     Serial.begin(9600);
 
-    #ifdef OLEDBLOCK
-        tft.begin();
-        tft.setRotation(1);
-    #endif
+#ifdef OLEDBLOCK
+    tft.begin();
+    tft.setRotation(1);
+    tft.fillScreen(BLACK);
+#endif
 
-    #ifdef JOYSTICKBUTTONBLOCK
+#ifdef JOYSTICKBUTTONBLOCK
     if (Lstick.begin(Wire, Laddress) == false)
     {
         Serial.println("Left Joystick does not appear to be connected. Please check wiring. Freezing...");
@@ -178,12 +271,123 @@ void setup()
     pinMode(5, INPUT); // change values later
     pinMode(6, INPUT); // change values later
     pinMode(9, INPUT); // change values later
-    #endif
+#endif
+
+    // flags for the menu
+    // bool setMouseSpeedFlag = false;
+
+    tft.setCursor(0, 0);
+    tft.setTextColor(WHITE);
+    tft.setTextSize(1);
+    tft.print("Please Select Mouse Sensitivity:");
+    tft.setCursor(0, 20);
+    tft.setTextColor(YELLOW);
+    tft.print("Yellow: Low");
+    tft.setCursor(0, 40);
+    tft.setTextColor(RED);
+    tft.print("Red: Normal");
+    tft.setCursor(0, 60);
+    tft.setTextColor(GREEN);
+    tft.print("Green: Fast");
+    tft.setCursor(0, 80);
+    tft.setTextColor(BLUE);
+    tft.print("Blue: Very Fast");
+
+    // // one time menu
+    // while (1)
+    // {
+
+    //     // leave the menu when done
+
+    //         // let buttons choose sentivity
+    //         // yellow = 0.5, top left
+    //         // red = 1, bottom left
+    //         // green = 1.5, top right
+    //         // blue = 2, button right
+    //     if (setMouseSpeedFlag == false)
+    //     {
+    //         if (chk_buttons(4))
+    //         {
+    //             // RED
+    //             mouse.set_sensitivity(0.5);
+    //             setMouseSpeedFlag = true;
+    //         }
+
+    //         if (chk_buttons(5))
+    //         {
+    //             Serial.println("button 5\n");
+    //             mouse.set_sensitivity(1);
+    //             setMouseSpeedFlag = true;
+    //         }
+    //         if (chk_buttons(6))
+    //         {
+    //             Serial.println("button 6\n");
+    //             mouse.set_sensitivity(1.5);
+    //             setMouseSpeedFlag = true;
+    //         }
+    //         // if (chk_buttons(9))
+    //         // {
+    //         //     Serial.println("button 9\n");
+    //         //     mouse.set_sensitivity(2);
+    //         //     setMouseSpeedFlag = true;
+    //         // }
+    //     }
+
+    //     if (setMouseSpeedFlag == true)
+    //         break;
+    // }
+    // tft.fillScreen(BLACK);
 }
 
 void loop()
 {
-    #ifdef JOYSTICKBUTTONBLOCK
+    // one time menu
+    while (1)
+    {
+
+        // leave the menu when done
+
+        // let buttons choose sentivity
+        // yellow = 0.5, top left
+        // red = 1, bottom left
+        // green = 1.5, top right
+        // blue = 2, button right
+        if (setMouseSpeedFlag == false)
+        {
+            if (chk_buttons(4))
+            {
+                // RED
+                mouse.set_sensitivity(0.5);
+                setMouseSpeedFlag = true;
+            }
+
+            if (chk_buttons(5))
+            {
+                Serial.println("button 5\n");
+                mouse.set_sensitivity(1);
+                setMouseSpeedFlag = true;
+            }
+            if (chk_buttons(6))
+            {
+                Serial.println("button 6\n");
+                mouse.set_sensitivity(1.5);
+                setMouseSpeedFlag = true;
+            }
+            if (chk_buttons(9))
+            {
+                Serial.println("button 9\n");
+                mouse.set_sensitivity(2);
+                setMouseSpeedFlag = true;
+            }
+        }
+
+        if (setMouseSpeedFlag == true)
+            break;
+    }
+    tft.fillScreen(WHITE);
+
+    Serial.println(mouse.get_sensitivity());
+#ifdef JOYSTICKBUTTONBLOCK
     // gather coord data from joystick (0-1023)
     LinX = Lstick.getHorizontal();
     LinY = Lstick.getVertical();
@@ -286,38 +490,54 @@ void loop()
         Alt = 1;
         k.toggle_alt();
     }
-    #endif
-    
+#endif
+
     // Print button, joystick, and keyboard output maximum of 100ms (10Hz). After, reset button status (besides CAPS)
     if (millis() >= (timepass + 100))
     {
-        #ifdef JOYSTICKBUTTONBLOCK && MOUSEBLOCK
-        if (Lkey == 0){
+        static uint8_t leftJoystickCounter = 0;
+
+#ifdef JOYSTICKBUTTONBLOCK &&MOUSEBLOCK
+        if (Lkey == 0)
+        {
 
             //******************** Mouse Serial Code *****************
-            if(Rclick)
+            if (Rclick)
+            {
                 mouse.click(RIGHT);
-            if(Lclick)
+                mouse.set_sensitivity(2);
+            }
+            if (Lclick)
+            {
                 mouse.click(LEFT);
+                mouse.set_sensitivity(0.5);
+            }
             mouse.move(RinX, RinY, 0);
             Rclick = 0;
             //******************** Mouse Serial End ******************
 
+            leftJoystickCounter = 0;
         }
-        #endif
+#endif
 
-        #ifdef JOYSTICKBUTTONBLOCK && KEYBOARDBLOCK
-        if (Lkey != 0){
-
-            timepass = millis(); // set timer to next increment
-
+#ifdef JOYSTICKBUTTONBLOCK &&KEYBOARDBLOCK
+        if (Lkey != 0)
+        {
             static uint8_t prevRkeyState = 0;
             static bool resetJoystickState = true;
 
-            if(prevRkeyState != Rkey && resetJoystickState == true)
-                k.keyboard_serial(Lkey,Rkey);
+            timepass = millis(); // set timer to next increment
+            leftJoystickCounter++;
 
-            if(Rkey == 0)
+            if (leftJoystickCounter == 10)
+            {
+                mode_selector(Lkey % 10);
+            }
+
+            if (prevRkeyState != Rkey && resetJoystickState == true)
+                k.keyboard_serial(Lkey, Rkey);
+
+            if (Rkey == 0)
                 resetJoystickState = true;
             else
                 resetJoystickState = false;
@@ -329,14 +549,11 @@ void loop()
             Shift = 0;
             Ctrl = 0;
             Alt = 0;
-
-
         }
-        #endif
+#endif
     }
 
-    #ifdef OLEDBLOCK
-        tft.fillScreen(WHITE);
-    #endif
-
+    // #ifdef OLEDBLOCK
+    //     tft.fillScreen(WHITE);
+    // #endif
 }
