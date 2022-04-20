@@ -279,64 +279,38 @@ void setup()
     tft.setCursor(0, 0);
     tft.setTextColor(WHITE);
     tft.setTextSize(1);
-    tft.print("Please Select Mouse Sensitivity:");
+    tft.print("Please Select Mouse  Sensitivity:");
+
     tft.setCursor(0, 20);
-    tft.setTextColor(YELLOW);
+    tft.setTextColor(WHITE);
     tft.print("Yellow: Low");
-    tft.setCursor(0, 40);
-    tft.setTextColor(RED);
+
+    tft.setCursor(0, 30);
+    tft.setTextColor(WHITE);
     tft.print("Red: Normal");
-    tft.setCursor(0, 60);
-    tft.setTextColor(GREEN);
-    tft.print("Green: Fast");
-    tft.setCursor(0, 80);
-    tft.setTextColor(BLUE);
-    tft.print("Blue: Very Fast");
 
-    // // one time menu
-    // while (1)
-    // {
+    tft.setCursor(0, 40);
+    tft.setTextColor(WHITE);
+    tft.print("Blue: Fast");
+    // reading dummny
+    chk_buttons(4);
+    chk_buttons(5);
+    chk_buttons(6);
+    chk_buttons(9);
+        chk_buttons(4);
+    chk_buttons(5);
+    chk_buttons(6);
+    chk_buttons(9);
+        chk_buttons(4);
+    chk_buttons(5);
+    chk_buttons(6);
+    chk_buttons(9);
+        chk_buttons(4);
+    chk_buttons(5);
+    chk_buttons(6);
+    chk_buttons(9);
+    _delay_ms(1000);
 
-    //     // leave the menu when done
-
-    //         // let buttons choose sentivity
-    //         // yellow = 0.5, top left
-    //         // red = 1, bottom left
-    //         // green = 1.5, top right
-    //         // blue = 2, button right
-    //     if (setMouseSpeedFlag == false)
-    //     {
-    //         if (chk_buttons(4))
-    //         {
-    //             // RED
-    //             mouse.set_sensitivity(0.5);
-    //             setMouseSpeedFlag = true;
-    //         }
-
-    //         if (chk_buttons(5))
-    //         {
-    //             Serial.println("button 5\n");
-    //             mouse.set_sensitivity(1);
-    //             setMouseSpeedFlag = true;
-    //         }
-    //         if (chk_buttons(6))
-    //         {
-    //             Serial.println("button 6\n");
-    //             mouse.set_sensitivity(1.5);
-    //             setMouseSpeedFlag = true;
-    //         }
-    //         // if (chk_buttons(9))
-    //         // {
-    //         //     Serial.println("button 9\n");
-    //         //     mouse.set_sensitivity(2);
-    //         //     setMouseSpeedFlag = true;
-    //         // }
-    //     }
-
-    //     if (setMouseSpeedFlag == true)
-    //         break;
-    // }
-    // tft.fillScreen(BLACK);
 }
 
 void loop()
@@ -344,49 +318,42 @@ void loop()
     // one time menu
     while (1)
     {
-
         // leave the menu when done
+        static bool startup = false;
 
         // let buttons choose sentivity
-        // yellow = 0.5, top left
-        // red = 1, bottom left
-        // green = 1.5, top right
-        // blue = 2, button right
         if (setMouseSpeedFlag == false)
         {
             if (chk_buttons(4))
             {
-                // RED
                 mouse.set_sensitivity(0.5);
                 setMouseSpeedFlag = true;
             }
 
             if (chk_buttons(5))
             {
-                Serial.println("button 5\n");
                 mouse.set_sensitivity(1);
                 setMouseSpeedFlag = true;
             }
             if (chk_buttons(6))
             {
-                Serial.println("button 6\n");
-                mouse.set_sensitivity(1.5);
-                setMouseSpeedFlag = true;
-            }
-            if (chk_buttons(9))
-            {
-                Serial.println("button 9\n");
                 mouse.set_sensitivity(2);
                 setMouseSpeedFlag = true;
             }
+            if(startup == false)
+            {
+                setMouseSpeedFlag = false;
+                startup = true;
+                _delay_ms(1000);
+            }
         }
 
-        if (setMouseSpeedFlag == true)
+        if (setMouseSpeedFlag == true){
+            tft.fillScreen(BLACK);
             break;
+        }
     }
-    tft.fillScreen(WHITE);
 
-    Serial.println(mouse.get_sensitivity());
 #ifdef JOYSTICKBUTTONBLOCK
     // gather coord data from joystick (0-1023)
     LinX = Lstick.getHorizontal();
@@ -474,21 +441,25 @@ void loop()
     {
         CAPS = CAPS ^ 1;
         k.toggle_caps_lock();
+        //tft.fillScreen(YELLOW);
     }
     else if (chk_buttons(5))
     {
         Shift = 1;
         k.toggle_shift();
+        //tft.fillScreen(RED);
     }
     else if (chk_buttons(6))
     {
         Ctrl = 1;
         k.toggle_ctrl();
+        //tft.fillScreen(BLUE);
     }
     else if (chk_buttons(9))
     {
         Alt = 1;
         k.toggle_alt();
+        //tft.fillScreen(GREEN);
     }
 #endif
 
@@ -505,12 +476,10 @@ void loop()
             if (Rclick)
             {
                 mouse.click(RIGHT);
-                mouse.set_sensitivity(2);
             }
             if (Lclick)
             {
                 mouse.click(LEFT);
-                mouse.set_sensitivity(0.5);
             }
             mouse.move(RinX, RinY, 0);
             Rclick = 0;
