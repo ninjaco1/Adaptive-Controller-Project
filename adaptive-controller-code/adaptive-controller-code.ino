@@ -327,17 +327,20 @@ void loop()
             if (chk_buttons(4))
             {
                 mouse.set_sensitivity(0.5);
+                tft.fillScreen(YELLOW);
                 setMouseSpeedFlag = true;
             }
 
             if (chk_buttons(5))
             {
                 mouse.set_sensitivity(1);
+                tft.fillScreen(RED);
                 setMouseSpeedFlag = true;
             }
             if (chk_buttons(6))
             {
                 mouse.set_sensitivity(2);
+                tft.fillScreen(BLUE);
                 setMouseSpeedFlag = true;
             }
             if(startup == false)
@@ -349,7 +352,7 @@ void loop()
         }
 
         if (setMouseSpeedFlag == true){
-            tft.fillScreen(BLACK);
+            //tft.fillScreen(BLACK);
             break;
         }
     }

@@ -15,7 +15,8 @@ class Key {
         uint8_t caps_lock;  // to see if caps lock is on or off
         uint8_t ctrl;       // to see if the ctrl is on or off
         uint8_t alt;        // to see if the alt is on or off
-
+        
+        // https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/
         // [joy1][joy2]
         char keymap[8][8] = {
             //                        tab
@@ -32,7 +33,7 @@ class Key {
             //                        backspace
             {'a', 'b', 'c', 'd', 'e', KEY_BACKSPACE, NULL, NULL},
             //                        ctrl
-            {'f', 'g', 'h', 'i', 'j', KEY_LEFT_CTRL, NULL, NULL}
+            {'f', 'g', 'h', 'i', 'j', KEY_LEFT_CTRL, KEY_CAPS_LOCK, NULL}
         };
 
         // keymap with shift 
@@ -52,7 +53,7 @@ class Key {
             //                        left_arrow
             {'A', 'B', 'C', 'D', 'E', 0xd8, NULL, NULL},
             //                        caps_lock
-            {'F', 'G', 'H', 'I', 'J', 0xc1, NULL, NULL}
+            {'F', 'G', 'H', 'I', 'J', KEY_CAPS_LOCK, NULL, NULL}
         };
 
 
@@ -143,7 +144,15 @@ void Key::serial_out(){
         {
             toggle_ctrl();
         }
+        case KEY_RIGHT_CTRL:
+        {
+            toggle_ctrl();
+        }
         case KEY_LEFT_ALT:
+        {
+            toggle_alt();
+        }
+        case KEY_RIGHT_ALT:
         {
             toggle_alt();
         }
@@ -153,10 +162,19 @@ void Key::serial_out(){
         }
 
     }
+    // checking if any of the keys are toggled
     if (ctrl == 1)
         Keyboard.press(KEY_LEFT_CTRL);
-    // if (key_press == KEY_LEFT_SHIFT)
-    //     toggle_shift();
+
+    if (shift == 1)
+        Keyboard.press(KEY_LEFT_SHIFT);
+
+    if (caps_lock == 1) 
+        Keyboard.press(KEY_CAPS_LOCK); 
+
+    if (alt == 1) 
+        Keyboard.press(KEY_LEFT_ALT);
+    
     Keyboard.press(key_press);
     Keyboard.releaseAll();
 }
