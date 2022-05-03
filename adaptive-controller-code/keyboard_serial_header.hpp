@@ -126,7 +126,7 @@ void Key::serial_out(){
 
     // then everything else after
   
-    key_press = (shift == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
+    key_press = (shift == 0 && caps_lock == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
     switch (key_press){
         case KEY_LEFT_SHIFT:
         {

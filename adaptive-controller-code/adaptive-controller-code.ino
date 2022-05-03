@@ -245,7 +245,7 @@ void setup()
 
 #ifdef OLEDBLOCK
     tft.begin();
-    tft.setRotation(1);
+    tft.setRotation(2);
     tft.fillScreen(BLACK);
 #endif
 
@@ -273,6 +273,12 @@ void setup()
     pinMode(9, INPUT); // change values later
 #endif
 
+    //LED Diodes
+    pinMode(18, OUTPUT);
+    pinMode(19, OUTPUT);
+    pinMode(20, OUTPUT);
+    pinMode(21, OUTPUT);
+    
     // flags for the menu
     // bool setMouseSpeedFlag = false;
 
@@ -283,11 +289,11 @@ void setup()
 
     tft.setCursor(0, 20);
     tft.setTextColor(WHITE);
-    tft.print("Yellow: Low");
+    tft.print("RED: Low");
 
     tft.setCursor(0, 30);
     tft.setTextColor(WHITE);
-    tft.print("Red: Normal");
+    tft.print("LOW: Normal");
 
     tft.setCursor(0, 40);
     tft.setTextColor(WHITE);
@@ -311,51 +317,34 @@ void setup()
     chk_buttons(9);
     _delay_ms(1000);
 
+    while (1)
+    {
+        // leave the menu when done
+
+        // let buttons choose sentivity
+        if (chk_buttons(4))
+        {
+            mouse.set_sensitivity(0.5);
+            break;
+        }
+
+        if (chk_buttons(5))
+        {
+            mouse.set_sensitivity(1);
+            break;
+        }
+        if (chk_buttons(6))
+        {
+            mouse.set_sensitivity(2);
+            break;
+        }
+    }
+
+    tft.fillScreen(BLACK);
 }
 
 void loop()
 {
-    // one time menu
-    while (1)
-    {
-        // leave the menu when done
-        static bool startup = false;
-
-        // let buttons choose sentivity
-        if (setMouseSpeedFlag == false)
-        {
-            if (chk_buttons(4))
-            {
-                mouse.set_sensitivity(0.5);
-                tft.fillScreen(YELLOW);
-                setMouseSpeedFlag = true;
-            }
-
-            if (chk_buttons(5))
-            {
-                mouse.set_sensitivity(1);
-                tft.fillScreen(RED);
-                setMouseSpeedFlag = true;
-            }
-            if (chk_buttons(6))
-            {
-                mouse.set_sensitivity(2);
-                tft.fillScreen(BLUE);
-                setMouseSpeedFlag = true;
-            }
-            if(startup == false)
-            {
-                setMouseSpeedFlag = false;
-                startup = true;
-                _delay_ms(1000);
-            }
-        }
-
-        if (setMouseSpeedFlag == true){
-            //tft.fillScreen(BLACK);
-            break;
-        }
-    }
 
 #ifdef JOYSTICKBUTTONBLOCK
     // gather coord data from joystick (0-1023)
@@ -444,25 +433,29 @@ void loop()
     {
         CAPS = CAPS ^ 1;
         k.toggle_caps_lock();
-        //tft.fillScreen(YELLOW);
+        //tft.fillScreen(RED);
+        digitalWrite(18,CAPS);
     }
     else if (chk_buttons(5))
     {
         Shift = 1;
         k.toggle_shift();
-        //tft.fillScreen(RED);
+        //tft.fillScreen(YELLOW);
+        digitalWrite(19,Shift);
     }
     else if (chk_buttons(6))
     {
         Ctrl = 1;
         k.toggle_ctrl();
         //tft.fillScreen(BLUE);
+        digitalWrite(20,Ctrl);
     }
     else if (chk_buttons(9))
     {
         Alt = 1;
         k.toggle_alt();
         //tft.fillScreen(GREEN);
+        digitalWrite(21,Alt);
     }
 #endif
 
@@ -507,8 +500,16 @@ void loop()
             }
 
             if (prevRkeyState != Rkey && resetJoystickState == true)
+            {
                 k.keyboard_serial(Lkey, Rkey);
-
+                Shift = 0;
+                Ctrl = 0;
+                Alt = 0;
+                digitalWrite(19,Shift);
+                digitalWrite(20,Ctrl);
+                digitalWrite(21,Alt);
+            }
+  
             if (Rkey == 0)
                 resetJoystickState = true;
             else
@@ -524,8 +525,4 @@ void loop()
         }
 #endif
     }
-
-    // #ifdef OLEDBLOCK
-    //     tft.fillScreen(WHITE);
-    // #endif
 }
