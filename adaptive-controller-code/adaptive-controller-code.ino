@@ -151,36 +151,69 @@ uint8_t chk_click(uint8_t which_click)
 //                            mode_selector
 //
 //******************************************************************************
-void mode_selector(uint8_t selector)
+void mode_selector(uint8_t selector, uint8_t shift, uint8_t caps)
 {
     switch (selector)
     {
     case 0:
-        visual_aid_display('K', 'O', ' ', 'M', ' ', ' ', 'L', 'N');
+        if(shift)
+            visual_aid_display('K', 'O', ' ', 'M', ' ', ' ', 'L', 'N');
+        else if(caps)
+            visual_aid_display('K', 'O', ' ', 'M', ' ', ' ', 'L', 'N');
+        else
+            visual_aid_display('k', 'o', ' ', 'm', ' ', ' ', 'l', 'n');
         break;
     case 1:
-        visual_aid_display('P', 'T', '[', 'R', ']', ' ', 'Q', 'S');
+        if(shift)
+            visual_aid_display('P', 'T', '{', 'R', '}', ' ', 'Q', 'S');
+        else if(caps)
+            visual_aid_display('P', 'T', '[', 'R', ']', ' ', 'Q', 'S');
+        else
+            visual_aid_display('p', 't', '[', 'r', ']', ' ', 'q', 's');
         break;
     case 2:
-        visual_aid_display('U', 'Y', '\\', 'W', ' ', ' ', 'V', 'X');
+        if(shift)
+            visual_aid_display('U', 'Y', '\\', 'W', ' ', ' ', 'V', 'X');
+        else if(caps)
+            visual_aid_display('U', 'Y', '\\', 'W', ' ', ' ', 'V', 'X');
+        else
+            visual_aid_display('u', 'y', '\\', 'w', ' ', ' ', 'v', 'x');
         break;
     case 3:
-        visual_aid_display(',', 'Z', ' ', '\'', ' ', ' ', '.', '/');
+        if(shift)
+            visual_aid_display('<', 'Z', ' ', '"', ' ', ' ', '>', '?');
+        else if(caps)
+            visual_aid_display(',', 'Z', ' ', '\'', ' ', ' ', '.', '/');
+        else
+            visual_aid_display(',', 'z', ' ', '\'', ' ', ' ', '.', '/');
         break;
     case 4:
-        visual_aid_display('6', '0', '-', '8', '=', ' ', '7', '9');
+        if(!shift)
+            visual_aid_display('6', '0', '-', '8', '=', ' ', '7', '9');
+        else
+            visual_aid_display('^', ')', '_', '*', '+', ' ', '&', '(');
         break;
     case 5:
-        visual_aid_display('1', '5', ' ', '3', ' ', ' ', '2', '4');
+        if(!shift)
+            visual_aid_display('1', '5', ' ', '3', ' ', ' ', '2', '4');
+        else
+            visual_aid_display('!', '%', ' ', '#', ' ', ' ', '@', '$');
         break;
     case 6:
-        visual_aid_display('A', 'E', ' ', 'C', ' ', ' ', 'B', 'D');
+        if(shift)
+            visual_aid_display('A', 'E', ' ', 'C', ' ', ' ', 'B', 'D');
+        else if(caps)
+            visual_aid_display('A', 'E', ' ', 'C', ' ', ' ', 'B', 'D');
+        else
+            visual_aid_display('a', 'e', ' ', 'c', ' ', ' ', 'b', 'd');
         break;
     case 7:
-        visual_aid_display('F', 'J', ' ', 'H', ' ', ' ', 'G', 'I');
-        break;
-    case 8:
-        visual_aid_display('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H');
+        if(shift)
+            visual_aid_display('F', 'J', ' ', 'H', ' ', ' ', 'G', 'I');
+        else if(caps)
+            visual_aid_display('F', 'J', ' ', 'H', ' ', ' ', 'G', 'I');
+        else
+            visual_aid_display('f', 'j', ' ', 'h', ' ', ' ', 'g', 'i');
         break;
     default:
         tft.fillScreen(BLACK);
@@ -193,7 +226,7 @@ void mode_selector(uint8_t selector)
 //******************************************************************************
 void visual_aid_display(char one, char two, char three, char four, char five, char six, char seven, char eight)
 {
-    tft.fillScreen(BLACK);
+    //tft.fillScreen(BLACK);
     tft.fillCircle(tft.width() / 2, tft.height() / 2, tft.height() / 2 - 1, WHITE);
     tft.setTextSize(3);
 
@@ -293,11 +326,11 @@ void setup()
 
     tft.setCursor(0, 30);
     tft.setTextColor(WHITE);
-    tft.print("LOW: Normal");
+    tft.print("YELLOW: Normal");
 
     tft.setCursor(0, 40);
     tft.setTextColor(WHITE);
-    tft.print("Blue: Fast");
+    tft.print("BLUE: Fast");
     // reading dummny
     chk_buttons(4);
     chk_buttons(5);
@@ -341,6 +374,8 @@ void setup()
     }
 
     tft.fillScreen(BLACK);
+    tft.fillCircle(tft.width() / 2, tft.height() / 2, tft.height() / 2 - 1, WHITE);
+
 }
 
 void loop()
@@ -434,28 +469,28 @@ void loop()
         CAPS = CAPS ^ 1;
         k.toggle_caps_lock();
         //tft.fillScreen(RED);
-        digitalWrite(18,CAPS);
+        digitalWrite(18,CAPS); // A0
     }
     else if (chk_buttons(5))
     {
         Shift = 1;
         k.toggle_shift();
         //tft.fillScreen(YELLOW);
-        digitalWrite(19,Shift);
+        digitalWrite(19,Shift); // A1
     }
     else if (chk_buttons(6))
     {
         Ctrl = 1;
         k.toggle_ctrl();
         //tft.fillScreen(BLUE);
-        digitalWrite(20,Ctrl);
+        digitalWrite(20,Ctrl); // A2
     }
     else if (chk_buttons(9))
     {
         Alt = 1;
         k.toggle_alt();
         //tft.fillScreen(GREEN);
-        digitalWrite(21,Alt);
+        digitalWrite(21,Alt); // A3
     }
 #endif
 
@@ -463,6 +498,7 @@ void loop()
     if (millis() >= (timepass + 100))
     {
         static uint8_t leftJoystickCounter = 0;
+        static bool clearVisualAid = 0;
 
 #ifdef JOYSTICKBUTTONBLOCK &&MOUSEBLOCK
         if (Lkey == 0)
@@ -482,6 +518,12 @@ void loop()
             //******************** Mouse Serial End ******************
 
             leftJoystickCounter = 0;
+
+            if(clearVisualAid){
+                tft.fillCircle(tft.width() / 2, tft.height() / 2, tft.height() / 2 - 1, WHITE);
+                clearVisualAid = 0;
+            }
+
         }
 #endif
 
@@ -496,7 +538,8 @@ void loop()
 
             if (leftJoystickCounter == 10)
             {
-                mode_selector(Lkey % 10);
+                mode_selector(Lkey % 10, k.get_shift(), k.get_caps());
+                clearVisualAid = 1;
             }
 
             if (prevRkeyState != Rkey && resetJoystickState == true)
@@ -508,6 +551,7 @@ void loop()
                 digitalWrite(19,Shift);
                 digitalWrite(20,Ctrl);
                 digitalWrite(21,Alt);
+                k.reset_keys();
             }
   
             if (Rkey == 0)
@@ -522,6 +566,7 @@ void loop()
             Shift = 0;
             Ctrl = 0;
             Alt = 0;
+
         }
 #endif
     }

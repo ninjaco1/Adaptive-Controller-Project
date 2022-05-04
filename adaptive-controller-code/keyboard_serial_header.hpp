@@ -56,6 +56,24 @@ class Key {
             {'F', 'G', 'H', 'I', 'J', KEY_CAPS_LOCK, NULL, NULL}
         };
 
+        char keymap_caps[8][8] = {
+            //                        tab
+            {'K', 'L', 'M', 'N', 'O', KEY_TAB, KEY_LEFT_SHIFT, NULL},
+            //                        alt
+            {'P', 'Q', 'R', 'S', 'T', KEY_LEFT_ALT, '[', ']'},
+            {'U', 'V', 'W', 'X', 'Y', ' ','\\', NULL},
+            //                        delete
+            {',', '.', '\'', '/', 'Z', KEY_DELETE, NULL, NULL},
+            //                        enter/return
+            {'6', '7', '8', '9', '0', KEY_RETURN, '-', '='},
+            //                        home
+            {'1', '2', '3', '4', '5', KEY_HOME, NULL, NULL},
+            //                        backspace
+            {'A', 'B', 'C', 'D', 'E', KEY_BACKSPACE, NULL, NULL},
+            //                        ctrl
+            {'F', 'G', 'H', 'I', 'J', KEY_LEFT_CTRL, KEY_CAPS_LOCK, NULL}
+        };
+
 
     public:
         Key();
@@ -66,8 +84,16 @@ class Key {
         void toggle_caps_lock();
         void toggle_alt();
         void toggle_ctrl();
+
+
+        // getters
+        uint8_t get_shift();
+        uint8_t get_caps();
+        uint8_t get_ctrl();
         uint8_t get_e1();
         uint8_t get_e2();
+        void reset_keys();
+        
 
 
 };
@@ -126,7 +152,15 @@ void Key::serial_out(){
 
     // then everything else after
   
-    key_press = (shift == 0 && caps_lock == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
+    //key_press = (shift == 0 && caps_lock == 0) ? keymap[e1][e2] : keymap_shift[e1][e2];
+
+    if(shift)
+        key_press = keymap_shift[e1][e2];
+    else if (caps_lock)
+        key_press = keymap_caps[e1][e2];
+    else    
+        key_press = keymap[e1][e2];
+    
     switch (key_press){
         case KEY_LEFT_SHIFT:
         {
@@ -169,8 +203,8 @@ void Key::serial_out(){
     if (shift == 1)
         Keyboard.press(KEY_LEFT_SHIFT);
 
-    if (caps_lock == 1) 
-        Keyboard.press(KEY_CAPS_LOCK); 
+    // if (caps_lock == 1) 
+    //     Keyboard.press(KEY_CAPS_LOCK);
 
     if (alt == 1) 
         Keyboard.press(KEY_LEFT_ALT);
@@ -204,6 +238,18 @@ uint8_t Key::get_e2(){
     return e2;
 }
 
+void Key::reset_keys(){
+    shift = 0;
+    ctrl = 0;
+    alt = 0;
+}
 
+uint8_t Key::get_shift(){
+    return shift;
+}
+
+uint8_t Key::get_caps(){
+    return caps_lock;
+}
 
 #endif
