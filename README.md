@@ -12,6 +12,9 @@ The team has designed the system by creating a block diagram and defining the in
 The team has since developed all blocks and integrated them together into a complete system. The system was shown to meet all of the project’s requirements and thus assert itself as a functional prototype. The team has since begun to close out the project, and have placed all information for future teams within the project closing section. The team has made several recommendations to improve future projects. As such, the project would be easily continued by future teams. These recommendations include implementing a testbench into the design, utilizing an I2C multiplexer for the joysticks, redesigning the enclosure for better fasteners, and include a demonstration for accuracy. The team also made global impact recommendations, which include finding a target user and lowering cost, as well as teamwork recommendations, which involve more synchronous meetings and task delegation.
 
 
+## Getting things started
+The system will start up and will display on the screen of what mouse sentivity the user wants. Each buttons will be a different DPI. Each Colored button will either be caps lock, shift, ctrl, or alt. To type a certain letter to the screen you move each controller in a certain different. If unsure where the letters are just hold the left joystick in a certain different for 1 second and the OLED display will show the possible letters that you want to type. If you want to use the mouse then just move only the right joystick. For a left click push down on the left joystick. For a right click push down on the right joystick.
+
 ## Images
 <img src="imgs/system.png"/>
 <br>
@@ -20,6 +23,8 @@ The team has since developed all blocks and integrated them together into a comp
 <br>
 <img src="imgs/slightly_apart.png"/>
 <br>
+
+### Schematic of Connections
 <img src="https://cdn.discordapp.com/attachments/897186190401363998/947742315202641960/unknown.png" />
 
 <br>
