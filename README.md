@@ -5,7 +5,6 @@ by Anthony Nguyen, Don Nguyen, Alyssa Estenson, Jordyn Marshall
 
 
 ## Images
-
 <img src="imgs/system.png"/>
 <br>
 
@@ -16,6 +15,7 @@ by Anthony Nguyen, Don Nguyen, Alyssa Estenson, Jordyn Marshall
 <img src="https://cdn.discordapp.com/attachments/897186190401363998/947742315202641960/unknown.png" />
 
 <br>
+
 ### Key mapping
 <br>
 <img src="https://cdn.discordapp.com/attachments/897186190401363998/932793595520483328/unknown.png" />
